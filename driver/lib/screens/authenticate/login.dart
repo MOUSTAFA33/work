@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                             Icons.email,
                             color: Colors.grey,
                           ),
-                          labelText: "emil",
+                          labelText: "email",
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey)),
                           focusedBorder: UnderlineInputBorder(
@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: _submitForm,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.lightGreenAccent),
-                          child: const Text(" Sign up",
+                          child: const Text("Login",
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 15,
@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("I alredy have an account! ",
+                          const Text("Dont have an account? ",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15,
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: const Text("Sign up",
                                   style: TextStyle(
                                     color: Colors.green,
-                                    fontSize: 20,
+                                    fontSize: 16,
                                   )))
                         ],
                       )

@@ -16,6 +16,7 @@ import '../../models/driver.dart';
 import '../../models/notifications.dart';
 import '../../models/user_location.dart';
 import '../../service/realtime_service.dart';
+import 'Long_Trip_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -313,7 +314,24 @@ class _HomePageState extends State<HomePage> {
                           ]),
                     ),
                   ),
-                )
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: IconButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.black),
+                      ),
+                              color: Colors.green,
+                              icon: const Icon(Icons.travel_explore_outlined),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (c) => const LongTrip()));
+                              },)
+                  ))
                 // : Center(
                 //     child: Column(
                 //       mainAxisAlignment: MainAxisAlignment.center,

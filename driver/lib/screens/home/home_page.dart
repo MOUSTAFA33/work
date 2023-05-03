@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:driver/models/driver.dart';
 import 'package:driver/models/notifications.dart';
+import 'package:driver/screens/home/long_trip_page.dart';
 import 'package:driver/screens/home/trip_page.dart';
 import 'package:driver/service/auth_service.dart';
 import 'package:driver/service/firestore_service.dart';
@@ -10,9 +10,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-
-import '../../models/client.dart';
-import '../../models/trip.dart';
 import '../../models/user_location.dart';
 import '../../service/notification_service.dart';
 import '../../service/realtime_service.dart';
@@ -92,6 +89,30 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: "notifications_btn",
+            onPressed: () {
+              // Add your onPressed code here!
+            },
+            backgroundColor: Colors.green,
+            child:  Icon(Icons.notifications),
+          ),
+          SizedBox(height: 5,),
+          FloatingActionButton(
+            heroTag: "Trip_btn",
+            onPressed: () {
+              Navigator.push((context),
+                    MaterialPageRoute(builder: (context) => TripPage()));
+            },
+            backgroundColor: Colors.green,
+            child:  Icon(Icons.train_sharp),
+          ),
+        ],
+      ),
       appBar: AppBar(
         backgroundColor: Colors.green[700],
         leading: IconButton(
