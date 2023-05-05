@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:client/screens/home/trip_page.dart';
 import 'package:client/service/auth_service.dart';
@@ -7,16 +6,17 @@ import 'package:client/service/firestore_service.dart';
 import 'package:client/service/location_service.dart';
 import 'package:client/service/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import '../../models/client.dart';
 import '../../models/driver.dart';
-import '../../models/notifications.dart';
 import '../../models/user_location.dart';
 import '../../service/realtime_service.dart';
+import 'CustomSearch.dart';
 import 'Long_Trip_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -54,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController destinationLocationController = TextEditingController();
   bool showDriver = false;
   bool _isSubWidgetVisible = true;
+  Client? client;
 
   void toggleSubWidgetVisibility() {
     setState(() {
@@ -61,12 +62,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  final List<Place> places = [
-    Place(name: 'Eiffel Tower', coordinates: LatLng(48.8584, 2.2945)),
-    Place(name: 'Statue of Liberty', coordinates: LatLng(40.6892, -74.0445)),
-    Place(name: 'Taj Mahal', coordinates: LatLng(27.1750, 78.0422)),
-    Place(name: 'Great Wall of China', coordinates: LatLng(40.4319, 116.5704)),
-  ];
   List<String> list = [];
   @override
   void initState() {
@@ -74,12 +69,14 @@ class _HomePageState extends State<HomePage> {
     locationService.getCurrentLoc().then((value) => setState(() {
           currentLocation = value;
           sourceLocation = value;
-          sourceLocationController.text = value.toString();
+          sourceLocationController.text =
+              value.latitude.toString() + value.longitude.toString();
         }));
     notificationService.setupToken();
     fixIconMarker();
     getmessage();
     tracking();
+    getClient();
   }
 
   Future<void> fixIconMarker() async {
@@ -96,6 +93,13 @@ class _HomePageState extends State<HomePage> {
     locationSubscription!.pause();
     locationSubscription!.cancel();
     super.dispose();
+  }
+
+  Future<void> getClient() async {
+    String uid = await authService.getCurrentUserUid();
+    client = await firestoreService.getUser(uid);
+    print(client);
+    setState(() {});
   }
 
   @override
@@ -238,12 +242,13 @@ class _HomePageState extends State<HomePage> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             TextField(
+                              enabled: false,
                               readOnly: true,
                               controller: sourceLocationController,
                               decoration: InputDecoration(
-                                hintText: 'Source Location',
+                                hintText: 'Your Location',
                                 label: Text(
-                                  'Source Location',
+                                  'Your Location',
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold),
@@ -306,6 +311,7 @@ class _HomePageState extends State<HomePage> {
                                               sourceLocation,
                                               destinationLocation,
                                               _isSubWidgetVisible,
+                                              client!,
                                               toggleSubWidgetVisibility,
                                             ));
                                   });
@@ -316,13 +322,16 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: IconButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.black),
-                      ),
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            child: IconButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.black),
+                              ),
                               color: Colors.green,
                               icon: const Icon(Icons.travel_explore_outlined),
                               onPressed: () {
@@ -330,8 +339,31 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (c) => const LongTrip()));
-                              },)
-                  ))
+                              },
+                            )),
+                        IconButton(
+                          onPressed: () async {
+                            // method to show the search bar
+                            final result = await showSearch(
+                                context: context,
+                                // delegate to customize the search bar
+                                delegate: CustomSearchDelegate());
+                            if (result != null) {
+                              setState(() {
+                                destinationLocation = result;
+                                destinationLocationController.text =
+                                    destinationLocation!.latitude.toString() +
+                                        destinationLocation!.longitude
+                                            .toString();
+                                //
+                              });
+                            }
+                            print("destinationLocation = $destinationLocation");
+                          },
+                          icon: const Icon(Icons.search),
+                        )
+                      ],
+                    ))
                 // : Center(
                 //     child: Column(
                 //       mainAxisAlignment: MainAxisAlignment.center,
@@ -374,7 +406,7 @@ class _HomePageState extends State<HomePage> {
       print('Received message: ${message.notification?.body}');
       // Parse the message data as a JSON string
 
-      if (message.notification?.body == "accept") {
+      if (message.notification?.body == "Your driver accepted the request and in his way to you") {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -469,6 +501,7 @@ class _HomePageState extends State<HomePage> {
                                     sourceLocation,
                                     destinationLocation,
                                     _isSubWidgetVisible,
+                                    client!,
                                     toggleSubWidgetVisibility,
                                   ));
                         });
@@ -486,11 +519,4 @@ class _HomePageState extends State<HomePage> {
       print('Message data: ${message.data}');
     });
   }
-}
-
-class Place {
-  final String name;
-  final LatLng coordinates;
-
-  Place({required this.name, required this.coordinates});
 }

@@ -61,7 +61,7 @@ class NotificationService {
         body: jsonEncode(
           <String, dynamic>{
             'priority': 'high',
-            "notification": {"title": "New Message", "body": state},
+            "notification": {"title": "your driver did respond", "body": state == "accept" ? "Your driver accepted the request and in his way to you" : "Your driver refused the request please choose another driver" },
             'data': {'data': notifications.toJson()},
             "to": notifications.driverToken,
           },

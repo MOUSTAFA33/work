@@ -9,6 +9,7 @@ import '../../models/trip.dart';
 import '../../service/auth_service.dart';
 import '../../service/firestore_service.dart';
 import '../../service/notification_service.dart';
+import 'dart:math' show cos, sqrt, asin;
 
 class TripContainer {
   FirestoreService firestoreService = FirestoreService();
@@ -24,6 +25,9 @@ class TripContainer {
 
   void openMapRoute(
       double fromLat, double fromLng, double toLat, double toLng) async {
+    // final String googleMapsUrl =
+    //     'https://www.google.com/maps/dir/?api=1&origin=$fromLat,$fromLng&destination=$toLat,$toLng&travelmode=driving';
+
     final String googleMapsUrl =
         'https://www.google.com/maps/dir/?api=1&origin=$fromLat,$fromLng&destination=$toLat,$toLng&travelmode=driving';
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
@@ -33,6 +37,15 @@ class TripContainer {
     }
   }
 
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
   void showBoxDriver(
       BuildContext context,
       Driver? data,
@@ -40,7 +53,13 @@ class TripContainer {
       LatLng? sourceLocation,
       LatLng? destinationLocation,
       bool _isSubWidgetVisible,
+      Client client,
       VoidCallback onVisibilityChanged) {
+    double prix = (calculateDistance(
+        sourceLocation!.latitude,
+        sourceLocation.longitude,
+        destinationLocation!.latitude,
+        destinationLocation.longitude) * 100);
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         enableDrag: true,
@@ -67,9 +86,17 @@ class TripContainer {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Your Trip',
-                          style: TextStyle(fontSize: 15),
+                        Row(
+                          children: [
+                            Text(
+                              'Your Trip',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(" $prix DZD"),
+                          ],
                         ),
                         const SizedBox(height: 10),
                         Row(
@@ -110,8 +137,8 @@ class TripContainer {
                           thickness: 2,
                           color: Colors.black,
                         ),
-                        const Text(
-                          'Your selected Deiver',
+                        Text(
+                          'Your selected Driver',
                           style: TextStyle(fontSize: 15),
                         ),
                         const SizedBox(height: 10),
@@ -140,7 +167,7 @@ class TripContainer {
                                     openMapRoute(
                                         driverLocation!.latitude,
                                         driverLocation.longitude,
-                                        sourceLocation!.latitude,
+                                        sourceLocation.latitude,
                                         sourceLocation.longitude);
                                   },
                                 ),
@@ -173,11 +200,13 @@ class TripContainer {
                                             c.token,
                                             data.token,
                                             Trip(sourceLocation,
-                                                destinationLocation)));
+                                                destinationLocation),
+                                                prix),
+                                        client);
                                     // Navigator.pop(context);
                                     onVisibilityChanged();
                                   },
-                                  child: const Text('send'))
+                                  child: const Text('Ask For Driver'))
                             ],
                           ),
                       ]),

@@ -5,7 +5,9 @@ import 'package:client/service/firestore_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:math' show cos, sqrt, asin;
 
+import '../models/client.dart';
 import '../models/notifications.dart';
 
 class NotificationService {
@@ -44,7 +46,12 @@ class NotificationService {
     });
   }
 
-  Future<void> sendPushMessage(Notifications notifications) async {
+  Future<void> sendPushMessage(Notifications notifications, Client client) async {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((notifications.cordinate.distenation!.latitude - notifications.cordinate.source!.latitude) * p)/2 + 
+          c(notifications.cordinate.source!.latitude * p) * c(notifications.cordinate.distenation!.latitude * p) * 
+          (1 - c((notifications.cordinate.distenation!.longitude - notifications.cordinate.source!.longitude) * p))/2;
     try {
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -56,7 +63,7 @@ class NotificationService {
         body: jsonEncode(
           <String, dynamic>{
             'priority': 'high',
-            "notification": {"title": "New Message", "body": "Hello, world!"},
+            "notification": {"title": "${client.name} asked for a Driver!", "body": "Trip Distance: ${12742 * asin(sqrt(a))} Km"},
             'data': {'data': notifications.toJson()},
             "to": notifications.driverToken,
           },

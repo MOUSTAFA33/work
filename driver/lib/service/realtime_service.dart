@@ -1,8 +1,6 @@
 import 'package:driver/models/user_location.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../models/driver.dart';
 import 'firestore_service.dart';
 import 'dart:math' as math;
 

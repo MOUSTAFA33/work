@@ -93,23 +93,23 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            heroTag: "notifications_btn",
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-            backgroundColor: Colors.green,
-            child:  Icon(Icons.notifications),
-          ),
-          SizedBox(height: 5,),
+          // FloatingActionButton(
+          //   heroTag: "notifications_btn",
+          //   onPressed: () {
+          //     // Add your onPressed code here!
+          //   },
+          //   backgroundColor: Colors.green,
+          //   child:  Icon(Icons.notifications),
+          // ),
+          // SizedBox(height: 5,),
           FloatingActionButton(
             heroTag: "Trip_btn",
             onPressed: () {
               Navigator.push((context),
-                    MaterialPageRoute(builder: (context) => TripPage()));
+                  MaterialPageRoute(builder: (context) => TripPage()));
             },
             backgroundColor: Colors.green,
-            child:  Icon(Icons.train_sharp),
+            child: Icon(Icons.travel_explore_outlined),
           ),
         ],
       ),
@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                                           child: ListBody(
                                             children: const <Widget>[
                                               Text(
-                                                'push the On button to restart working',
+                                                'push the On button to start working',
                                                 style: TextStyle(
                                                     color: Colors.white),
                                               ),
@@ -271,8 +271,8 @@ class _HomePageState extends State<HomePage> {
         locationService.location.onLocationChanged.listen((newloc) async {
       currentLocation = LatLng(newloc.latitude!, newloc.longitude!);
       // print(currentLocation);
-      // locationService
-      //     .animateCameraPos(LatLng(newloc.latitude!, newloc.longitude!));
+      locationService
+          .animateCameraPos(LatLng(newloc.latitude!, newloc.longitude!));
       realtimeService.updateData(UserLocation(
           await authService.getCurrentUserUid(),
           "driver",
@@ -310,6 +310,7 @@ class _HomePageState extends State<HomePage> {
       Notifications notifications = Notifications.fromData(data);
       sourceLocation = notifications.cordinate.source;
       destinationLocation = notifications.cordinate.distenation;
+      final prix = notifications.prix;
 
       firestoreService.getClient(notifications.id).then((value) {
         showDialog(
@@ -329,20 +330,22 @@ class _HomePageState extends State<HomePage> {
           if (response == true) {
             notificationService.sendPushMessage(
                 Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate),
+                    notifications.clientToken, notifications.cordinate, notifications.prix),
                 "accept");
             realtimeService.readClient(notifications.id).then((value) async {
               TripContainer().showBoxDriver(
-                  context,
-                  await firestoreService.getClient(notifications.id),
-                  value,
-                  sourceLocation!,
-                  destinationLocation!);
+                context,
+                await firestoreService.getClient(notifications.id),
+                currentLocation,
+                sourceLocation!,
+                destinationLocation!,
+                prix
+              );
             });
           } else if (response == false) {
             notificationService.sendPushMessage(
                 Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate),
+                    notifications.clientToken, notifications.cordinate, notifications.prix),
                 "refuse");
           }
         });
@@ -363,6 +366,7 @@ class _HomePageState extends State<HomePage> {
       Notifications notifications = Notifications.fromData(data);
       sourceLocation = notifications.cordinate.source;
       destinationLocation = notifications.cordinate.distenation;
+      final prix = notifications.prix;
 
       firestoreService.getClient(notifications.id).then((value) {
         showDialog(
@@ -382,20 +386,21 @@ class _HomePageState extends State<HomePage> {
           if (response == true) {
             notificationService.sendPushMessage(
                 Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate),
+                    notifications.clientToken, notifications.cordinate, notifications.prix),
                 "accept");
             realtimeService.readClient(notifications.id).then((value) async {
               TripContainer().showBoxDriver(
                   context,
                   await firestoreService.getClient(notifications.id),
-                  value,
+                  currentLocation,
                   sourceLocation!,
-                  destinationLocation!);
+                  destinationLocation!,
+                  prix);
             });
           } else if (response == false) {
             notificationService.sendPushMessage(
                 Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate),
+                    notifications.clientToken, notifications.cordinate, notifications.prix),
                 "refuse");
           }
         });
