@@ -8,6 +8,7 @@ import 'package:driver/service/firestore_service.dart';
 import 'package:driver/service/location_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import '../../models/user_location.dart';
@@ -77,6 +78,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  bool is_active = false;
+
   Future<void> fixIconMarker() async {
     pinMarker = await locationService
         .createBitmapDescriptorFromIcon(Icons.location_pin);
@@ -139,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                                 width: 10,
                               ),
                               Text(
-                                'log out Mode',
+                                'Exit The App ?',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -148,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                             child: ListBody(
                               children: const <Widget>[
                                 Text(
-                                  ' are you sure  you want to log out ?',
+                                  ' are you sure  you want to Exit ?',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -159,15 +162,20 @@ class _HomePageState extends State<HomePage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                               ),
-                              onPressed: () async {
-                                authService.getCurrentUserUid().then((value) {
-                                  realtimeService.deleteData(value);
-                                  powerOn(false);
-                                  authService.signOut();
-                                  Navigator.pushReplacementNamed(context, '/');
-                                });
+                              onPressed: () {
+                                Navigator.pop(context);
                               },
-                              child: const Text('ON'),
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                              ),
+                              onPressed: () async {
+                                powerOn(false);
+                                SystemNavigator.pop();
+                              },
+                              child: const Text('Exit'),
                             ),
                           ]);
                     });
@@ -209,57 +217,78 @@ class _HomePageState extends State<HomePage> {
                       child: CircleAvatar(
                           backgroundColor: Colors.black,
                           child: IconButton(
-                              color: Colors.white,
+                              color: is_active ? Colors.green : Colors.red,
                               icon: const Icon(Icons.power_settings_new),
                               onPressed: () {
-                                powerOn(false);
+                                //powerOn(false);
 
                                 showDialog(
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        backgroundColor: Colors.black45,
-                                        title: Row(
-                                          children: const [
-                                            Icon(
-                                              Icons.mode_night_outlined,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              'Sleep Mode',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ],
-                                        ),
-                                        content: SingleChildScrollView(
-                                          child: ListBody(
-                                            children: const <Widget>[
-                                              Text(
-                                                'push the On button to start working',
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                      return !is_active
+                                          ? AlertDialog(
+                                              backgroundColor: Colors.black45,
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: const <Widget>[
+                                                    Text(
+                                                      'Start working ?',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.green,
-                                            ),
-                                            onPressed: () async {
-                                              Navigator.of(context).pop();
-                                              powerOn(true);
-                                            },
-                                            child: const Text('ON'),
-                                          ),
-                                        ],
-                                      );
+                                              actions: <Widget>[
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      is_active = true;
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                    powerOn(true);
+                                                  },
+                                                  child: const Text('ON'),
+                                                ),
+                                              ],
+                                            )
+                                          : AlertDialog(
+                                              backgroundColor: Colors.black45,
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: const <Widget>[
+                                                    Text(
+                                                      'Stop working ?',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: <Widget>[
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.red,
+                                                  ),
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      is_active = false;
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                    powerOn(false);
+                                                  },
+                                                  child: const Text('OFF'),
+                                                ),
+                                              ],
+                                            );
                                     });
                               })))),
             ]),
@@ -329,23 +358,30 @@ class _HomePageState extends State<HomePage> {
           // handle user response
           if (response == true) {
             notificationService.sendPushMessage(
-                Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate, notifications.prix),
+                Notifications(
+                    notifications.id,
+                    notifications.driverToken,
+                    notifications.clientToken,
+                    notifications.cordinate,
+                    notifications.prix),
                 "accept");
             realtimeService.readClient(notifications.id).then((value) async {
               TripContainer().showBoxDriver(
-                context,
-                await firestoreService.getClient(notifications.id),
-                currentLocation,
-                sourceLocation!,
-                destinationLocation!,
-                prix
-              );
+                  context,
+                  await firestoreService.getClient(notifications.id),
+                  currentLocation,
+                  sourceLocation!,
+                  destinationLocation!,
+                  prix);
             });
           } else if (response == false) {
             notificationService.sendPushMessage(
-                Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate, notifications.prix),
+                Notifications(
+                    notifications.id,
+                    notifications.driverToken,
+                    notifications.clientToken,
+                    notifications.cordinate,
+                    notifications.prix),
                 "refuse");
           }
         });
@@ -385,8 +421,12 @@ class _HomePageState extends State<HomePage> {
           // handle user response
           if (response == true) {
             notificationService.sendPushMessage(
-                Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate, notifications.prix),
+                Notifications(
+                    notifications.id,
+                    notifications.driverToken,
+                    notifications.clientToken,
+                    notifications.cordinate,
+                    notifications.prix),
                 "accept");
             realtimeService.readClient(notifications.id).then((value) async {
               TripContainer().showBoxDriver(
@@ -399,8 +439,12 @@ class _HomePageState extends State<HomePage> {
             });
           } else if (response == false) {
             notificationService.sendPushMessage(
-                Notifications(notifications.id, notifications.driverToken,
-                    notifications.clientToken, notifications.cordinate, notifications.prix),
+                Notifications(
+                    notifications.id,
+                    notifications.driverToken,
+                    notifications.clientToken,
+                    notifications.cordinate,
+                    notifications.prix),
                 "refuse");
           }
         });

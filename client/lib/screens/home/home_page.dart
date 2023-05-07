@@ -115,6 +115,20 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home Page'),
         actions: [
           IconButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.black),
+                              ),
+                              color: Colors.white,
+                              icon: const Icon(Icons.travel_explore_outlined),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (c) => const LongTrip()));
+                              },
+                            ),
+          IconButton(
               onPressed: () async {
                 showDialog(
                     context: context,
@@ -131,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                                 width: 10,
                               ),
                               Text(
-                                'log out Mode',
+                                'log out',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -158,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.pushReplacementNamed(context, '/');
                                 });
                               },
-                              child: const Text('ON'),
+                              child: const Text('Log out'),
                             ),
                           ]);
                     });
@@ -177,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation!,
-                      zoom: 14,
+                      zoom: 25,
                     ),
                     onCameraMove: (CameraPosition position) {
                       _loadVisibleRegion();
@@ -231,10 +245,10 @@ class _HomePageState extends State<HomePage> {
                 // _isSubWidgetVisible == true
                 //     ?
                 Align(
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment.topCenter,
                   child: Container(
                     color: Color.fromARGB(255, 255, 255, 255),
-                    height: 210,
+                    height: 185,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
                       child: Column(
@@ -246,19 +260,16 @@ class _HomePageState extends State<HomePage> {
                               readOnly: true,
                               controller: sourceLocationController,
                               decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                                 hintText: 'Your Location',
                                 label: Text(
                                   'Your Location',
                                   style: TextStyle(
-                                      fontSize: 22,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 icon: Icon(Icons.location_pin),
                                 border: OutlineInputBorder(gapPadding: 1),
-                                suffixIcon: GestureDetector(
-                                  onTap: () async {},
-                                  child: Icon(Icons.search),
-                                ),
                               ),
                               onTap: () {
                                 setState(() {
@@ -271,17 +282,38 @@ class _HomePageState extends State<HomePage> {
                               readOnly: true,
                               controller: destinationLocationController,
                               decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                                 hintText: 'Distanation Location',
                                 label: Text(
                                   'Distanation Location',
                                   style: TextStyle(
-                                      fontSize: 22,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 icon: Icon(Icons.flag_rounded),
                                 border: OutlineInputBorder(gapPadding: 1),
                                 suffixIcon: GestureDetector(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    print("yes");
+                                    // method to show the search bar
+                                    final result = await showSearch(
+                                        context: context,
+                                        // delegate to customize the search bar
+                                        delegate: CustomSearchDelegate());
+                                    if (result != null) {
+                                      setState(() {
+                                        destinationLocation = result;
+                                        destinationLocationController.text =
+                                            destinationLocation!.latitude
+                                                    .toString() +
+                                                destinationLocation!.longitude
+                                                    .toString();
+                                        //
+                                      });
+                                    }
+                                    print(
+                                        "destinationLocation = $destinationLocation");
+                                  },
                                   child: Icon(Icons.search),
                                 ),
                               ),
@@ -321,49 +353,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                Align(
-                    alignment: Alignment.topLeft,
-                    child: Row(
-                      children: [
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            child: IconButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.black),
-                              ),
-                              color: Colors.green,
-                              icon: const Icon(Icons.travel_explore_outlined),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (c) => const LongTrip()));
-                              },
-                            )),
-                        IconButton(
-                          onPressed: () async {
-                            // method to show the search bar
-                            final result = await showSearch(
-                                context: context,
-                                // delegate to customize the search bar
-                                delegate: CustomSearchDelegate());
-                            if (result != null) {
-                              setState(() {
-                                destinationLocation = result;
-                                destinationLocationController.text =
-                                    destinationLocation!.latitude.toString() +
-                                        destinationLocation!.longitude
-                                            .toString();
-                                //
-                              });
-                            }
-                            print("destinationLocation = $destinationLocation");
-                          },
-                          icon: const Icon(Icons.search),
-                        )
-                      ],
-                    ))
                 // : Center(
                 //     child: Column(
                 //       mainAxisAlignment: MainAxisAlignment.center,
@@ -406,7 +395,8 @@ class _HomePageState extends State<HomePage> {
       print('Received message: ${message.notification?.body}');
       // Parse the message data as a JSON string
 
-      if (message.notification?.body == "Your driver accepted the request and in his way to you") {
+      if (message.notification?.body ==
+          "Your driver accepted the request and in his way to you") {
         showDialog(
             context: context,
             builder: (BuildContext context) {
