@@ -5,10 +5,12 @@ import 'package:client/service/firestore_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' show cos, sqrt, asin;
 
 import '../models/client.dart';
 import '../models/notifications.dart';
+import '../screens/home/wait.dart';
 
 class NotificationService {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -47,6 +49,10 @@ class NotificationService {
   }
 
   Future<void> sendPushMessage(Notifications notifications, Client client) async {
+    // Obtain shared preferences.
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('request_sent', true);
+
     var p = 0.017453292519943295;
     var c = cos;
     var a = 0.5 - c((notifications.cordinate.distenation!.latitude - notifications.cordinate.source!.latitude) * p)/2 + 
@@ -76,7 +82,7 @@ class NotificationService {
   }
 
   void getmessage() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
 

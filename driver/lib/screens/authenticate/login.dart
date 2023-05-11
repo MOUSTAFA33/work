@@ -150,28 +150,28 @@ class _LoginPageState extends State<LoginPage> {
                                 fontSize: 15,
                               ))),
                       const SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Text("Dont have an account? ",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15,
-                              )),
-                          TextButton(
-                              onPressed: () async {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (c) => const SignUpPage()));
-                              },
-                              child: const Text("Sign up",
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 16,
-                                  )))
-                        ],
-                      )
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //   children: [
+                      //     const Text("Dont have an account? ",
+                      //         style: TextStyle(
+                      //           color: Colors.grey,
+                      //           fontSize: 15,
+                      //         )),
+                      //     TextButton(
+                      //         onPressed: () async {
+                      //           Navigator.pushReplacement(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (c) => const SignUpPage()));
+                      //         },
+                      //         child: const Text("Sign up",
+                      //             style: TextStyle(
+                      //               color: Colors.green,
+                      //               fontSize: 16,
+                      //             )))
+                      //   ],
+                      // )
                     ],
                   ),
                 ),

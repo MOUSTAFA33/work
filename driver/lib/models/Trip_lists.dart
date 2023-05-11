@@ -1,14 +1,24 @@
 List Stations = [
-  "station A",
-  "station B",
-  "station C",
-  "station D",
+  "Any",
+  "Station illizi",
+  "Station ain amenas",
+  "Station Djanet",
+  "Station Debdab",
+  "Station oued jarat",
+  "Station El oued",
+  "Station Ouergla",
+  "Station Tougourt",
 ];
 
 List Distination = [
-  "distination A",
-  "distination B",
-  "distination C",
-  "distination D",
+  "Any",
+  "illizi",
+  "ain amenas",
+  "Djanet",
+  "Debdab",
+  "oued jarat",
+  "El oued",
+  "Ouergla",
+  "Tougourt",
+  "Tassili",
 ];
-

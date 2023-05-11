@@ -7,6 +7,7 @@ import 'package:client/service/location_service.dart';
 import 'package:client/service/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -17,6 +18,8 @@ import '../../service/realtime_service.dart';
 import 'CustomSearch.dart';
 import 'Long_Trip_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'wait.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -74,7 +77,7 @@ class _HomePageState extends State<HomePage> {
         }));
     notificationService.setupToken();
     fixIconMarker();
-    getmessage();
+    getmessage(context);
     tracking();
     getClient();
   }
@@ -115,19 +118,16 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home Page'),
         actions: [
           IconButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.black),
-                              ),
-                              color: Colors.white,
-                              icon: const Icon(Icons.travel_explore_outlined),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (c) => const LongTrip()));
-                              },
-                            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.black),
+            ),
+            color: Colors.white,
+            icon: const Icon(Icons.travel_explore_outlined),
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (c) => const LongTrip()));
+            },
+          ),
           IconButton(
               onPressed: () async {
                 showDialog(
@@ -260,7 +260,8 @@ class _HomePageState extends State<HomePage> {
                               readOnly: true,
                               controller: sourceLocationController,
                               decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
                                 hintText: 'Your Location',
                                 label: Text(
                                   'Your Location',
@@ -282,7 +283,8 @@ class _HomePageState extends State<HomePage> {
                               readOnly: true,
                               controller: destinationLocationController,
                               decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
                                 hintText: 'Distanation Location',
                                 label: Text(
                                   'Distanation Location',
@@ -326,27 +328,40 @@ class _HomePageState extends State<HomePage> {
                             ),
                             ElevatedButton(
                                 onPressed: () {
-                                  debugPrint(sourceLocation.toString());
-                                  debugPrint(destinationLocation.toString());
+                                  // debugPrint(sourceLocation.toString());
+                                  // debugPrint(destinationLocation.toString());
 
-                                  realtimeService
-                                      .readDriver(sourceLocation!, list)
-                                      .then((value) {
-                                    driverLocation = value!.myLocation;
-                                    list.add(value.id);
-                                    firestoreService.getDrivers(value.id).then(
-                                        (value) =>
-                                            TripContainer().showBoxDriver(
-                                              context,
-                                              value,
-                                              driverLocation,
-                                              sourceLocation,
-                                              destinationLocation,
-                                              _isSubWidgetVisible,
-                                              client!,
-                                              toggleSubWidgetVisibility,
-                                            ));
-                                  });
+                                  if (destinationLocationController.text !=
+                                      "") {
+                                    realtimeService
+                                        .readDriver(sourceLocation!, list)
+                                        .then((value) {
+                                      driverLocation = value!.myLocation;
+                                      list.add(value.id);
+                                      firestoreService
+                                          .getDrivers(value.id)
+                                          .then((value) =>
+                                              TripContainer().showBoxDriver(
+                                                context,
+                                                value,
+                                                driverLocation,
+                                                sourceLocation,
+                                                destinationLocation,
+                                                _isSubWidgetVisible,
+                                                client!,
+                                                toggleSubWidgetVisibility,
+                                              ));
+                                    });
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Please choose a distination",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black12,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                  }
                                 },
                                 child: const Text('Find Driver'))
                           ]),
@@ -388,12 +403,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void getmessage() {
+  void getmessage(BuildContext context) {
     // Configure Firebase Messaging to listen for incoming messages
     print("object lesining .....................");
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Received message: ${message.notification?.body}');
       // Parse the message data as a JSON string
+
+      Navigator.pop(context);
+      print("trying to pop this \t\t\tawdwa");
+      // if (FixedAlertDialog.dialogKey.currentContext != null) {
+        // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
+      // }
 
       if (message.notification?.body ==
           "Your driver accepted the request and in his way to you") {
@@ -507,6 +528,12 @@ class _HomePageState extends State<HomePage> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('Opened app from notification: ${message.notification?.title}');
       print('Message data: ${message.data}');
+
+      Navigator.pop(context);
+      print("trying to pop this \t\t\tawdwa");
+      // if (FixedAlertDialog.dialogKey.currentContext != null) {
+        // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
+      // }
     });
   }
 }

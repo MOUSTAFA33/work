@@ -1,3 +1,4 @@
+import 'package:client/screens/home/wait.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,15 +38,27 @@ class TripContainer {
     }
   }
 
-  double calculateDistance(lat1, lon1, lat2, lon2) {
+  double calculatePrice(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var c = cos;
     var a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-    return 12742 * asin(sqrt(a));
+    double distance = 12742 * asin(sqrt(a));
+    print("price===================\t\t\t $distance");
+    if (distance < 3) {
+      return 100;
+    } else if (distance > 3 && distance < 4) {
+      return 200;
+    } else if (distance > 4 && distance < 10) {
+      return 300;
+    } else if (distance > 10) {
+      return (distance * 80);
+    }
+    return (distance * 80);
   }
 
+  bool onPressedValue = true;
   void showBoxDriver(
       BuildContext context,
       Driver? data,
@@ -55,11 +68,11 @@ class TripContainer {
       bool _isSubWidgetVisible,
       Client client,
       VoidCallback onVisibilityChanged) {
-    double prix = (calculateDistance(
+    double prix = calculatePrice(
         sourceLocation!.latitude,
         sourceLocation.longitude,
         destinationLocation!.latitude,
-        destinationLocation.longitude) * 100);
+        destinationLocation.longitude);
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         enableDrag: true,
@@ -108,7 +121,9 @@ class TripContainer {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                sourceLocation.toString(),
+                                sourceLocation.latitude.toString() +
+                                    ", " +
+                                    sourceLocation.longitude.toString(),
                                 style: const TextStyle(fontSize: 20),
                               ),
                             )
@@ -126,7 +141,10 @@ class TripContainer {
                               child: Text(
                                 destinationLocation == null
                                     ? 'Undefined ...'
-                                    : destinationLocation.toString(),
+                                    : destinationLocation.latitude.toString() +
+                                        ", " +
+                                        destinationLocation.longitude
+                                            .toString(),
                                 style: const TextStyle(fontSize: 20),
                               ),
                             )
@@ -149,7 +167,10 @@ class TripContainer {
                               color: Colors.red[400],
                             ),
                             title: Text(data.name),
-                            subtitle: Text(driverLocation.toString()),
+                            subtitle: Text("Lat: " +
+                                driverLocation!.latitude.toString() +
+                                ",Lng: " +
+                                driverLocation.longitude.toString()),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -165,7 +186,7 @@ class TripContainer {
                                   icon: const Icon(Icons.directions),
                                   onPressed: () {
                                     openMapRoute(
-                                        driverLocation!.latitude,
+                                        driverLocation.latitude,
                                         driverLocation.longitude,
                                         sourceLocation.latitude,
                                         sourceLocation.longitude);
@@ -201,9 +222,16 @@ class TripContainer {
                                             data.token,
                                             Trip(sourceLocation,
                                                 destinationLocation),
-                                                prix),
+                                            prix),
                                         client);
-                                    // Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    return showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return const FixedAlertDialog();
+                                      },
+                                    );
                                     onVisibilityChanged();
                                   },
                                   child: const Text('Ask For Driver'))

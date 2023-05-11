@@ -55,11 +55,40 @@ class RealtimeService {
     }
   }
 
+  // Future<UserLocation?> readDriver(
+  //     LatLng thelocation, List<String> list) async {
+  //   double minDistance = double.infinity;
+  //   UserLocation? closestDriver;
+  //   List<UserLocation> userLocations = [];
+  //   try {
+  //     final snapshot = await databaseReference2.get();
+  //     print(snapshot.value);
+  //     if (snapshot.exists) {
+  //       Map<String, dynamic> snapshotValue = Map<String, dynamic>.from(snapshot.value as Map);
+  //       for (var i in snapshotValue.values.toList()) {
+  //         Map<String, dynamic> a = Map<String, dynamic>.from(i as Map);
+  //         UserLocation userLocation = UserLocation.fromData(a);
+  //         double dist = distance(userLocation.myLocation, thelocation);
+  //         print(dist);
+  //         if (dist < minDistance) {
+  //           closestDriver = userLocation;
+  //         }
+  //       }
+  //     }
+  //     return closestDriver;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
   Future<UserLocation?> readDriver(
       LatLng thelocation, List<String> list) async {
+    double least_dist = 0;
     double minDistance = double.infinity;
     UserLocation? closestDriver;
+    UserLocation? final_userLocation;
     List<UserLocation> userLocations = [];
+    print("read Driver....................");
     try {
       final snapshot = await databaseReference2.get();
       print(snapshot.value);
@@ -71,10 +100,19 @@ class RealtimeService {
           UserLocation userLocation = UserLocation.fromData(a);
           double dist = distance(userLocation.myLocation, thelocation);
           print(dist);
-          if (dist < minDistance) {
-            closestDriver = userLocation;
+
+          if (least_dist == 0) {
+            least_dist = dist;
+            final_userLocation = userLocation;
+          } else {
+            if (dist < least_dist) {
+              least_dist = dist;
+              final_userLocation = userLocation;
+            }
           }
         }
+        closestDriver = final_userLocation;
+        print("least :::\t\t$least_dist");
       }
       return closestDriver;
     } catch (e) {
