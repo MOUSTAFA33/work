@@ -50,7 +50,7 @@ class AuthService {
       );
       String? token = await FirebaseMessaging.instance.getToken();
 
-      Client current = Client(authResult.user!.uid, name, email, phone, token!);
+      ClienT current = ClienT(authResult.user!.uid, name, email, phone, token!);
       await _firestore.createDriver(current);
       debugPrint('auth=$authResult');
       return authResult.user != null;

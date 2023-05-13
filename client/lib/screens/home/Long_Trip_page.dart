@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../models/Trip_lists.dart';
 import '../../service/auth_service.dart';
+import 'Long_trips_list.dart';
 import 'reservation_page.dart';
 
 class LongTrip extends StatefulWidget {
@@ -104,6 +105,15 @@ class _LongTripState extends State<LongTrip> {
         }).toList());
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (c) => MytripsList(id: uid,)));
+        },
+        child: Icon(Icons.my_library_books),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.green[700],
       ),

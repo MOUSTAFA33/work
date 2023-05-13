@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/Trip_lists.dart';
+import 'Long_tripinfo.dart';
 
 class TripPage extends StatefulWidget {
   const TripPage({super.key});
@@ -268,6 +269,10 @@ class _TripPageState extends State<TripPage> {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
                       return ListTile(
+                        onTap: (){
+                          Navigator.push((context),
+                  MaterialPageRoute(builder: (context) => MyTripINFO(id: data['tripid'], data: data,)));
+                        },
                         trailing: IconButton(
                           icon: Icon(
                             Icons.delete,
@@ -315,6 +320,7 @@ class _TripPageState extends State<TripPage> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
         child: Icon(Icons.add),
         onPressed: () {
           newTripdialog(context);

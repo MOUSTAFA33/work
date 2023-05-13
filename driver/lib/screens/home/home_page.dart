@@ -56,6 +56,8 @@ class _HomePageState extends State<HomePage> {
   bool showDriver = false;
 
   LatLng? currentLocation;
+  String uid = "";
+  String clientuid = "";
 
   @override
   void initState() {
@@ -65,10 +67,15 @@ class _HomePageState extends State<HomePage> {
         }));
     super.initState();
     fixIconMarker();
+    getuid();
 
     notificationService.setupToken();
     tracking();
     getmessage();
+  }
+
+  getuid() async {
+    uid = await authService.getCurrentUserUid();
   }
 
   @override
@@ -275,8 +282,7 @@ class _HomePageState extends State<HomePage> {
                                                 ElevatedButton(
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.red,
+                                                    backgroundColor: Colors.red,
                                                   ),
                                                   onPressed: () async {
                                                     setState(() {
@@ -311,7 +317,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void powerOn(isAvalaible) async {
-    String uid = await authService.getCurrentUserUid();
     firestoreService.OnUser(isAvalaible, uid);
     if (isAvalaible == false) {
       locationSubscription!.pause();
@@ -342,6 +347,7 @@ class _HomePageState extends State<HomePage> {
       final prix = notifications.prix;
 
       firestoreService.getClient(notifications.id).then((value) {
+        clientuid = value.id;
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -372,7 +378,9 @@ class _HomePageState extends State<HomePage> {
                   currentLocation,
                   sourceLocation!,
                   destinationLocation!,
-                  prix);
+                  prix,
+                  clientuid,
+                  uid);
             });
           } else if (response == false) {
             notificationService.sendPushMessage(
@@ -405,6 +413,7 @@ class _HomePageState extends State<HomePage> {
       final prix = notifications.prix;
 
       firestoreService.getClient(notifications.id).then((value) {
+        clientuid = value.id;
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -435,7 +444,9 @@ class _HomePageState extends State<HomePage> {
                   currentLocation,
                   sourceLocation!,
                   destinationLocation!,
-                  prix);
+                  prix,
+                  clientuid,
+                  uid);
             });
           } else if (response == false) {
             notificationService.sendPushMessage(

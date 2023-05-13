@@ -63,10 +63,10 @@ class FirestoreService {
     }
   }
 
-  Future<Client> getClient(String uid) async {
+  Future<ClienT> getClient(String uid) async {
     try {
       var driverData = await clientsCollectionRef.doc(uid).get();
-      return Client.fromData(driverData.data() as Map<String, dynamic>);
+      return ClienT.fromData(driverData.data() as Map<String, dynamic>);
     } catch (e) {
       rethrow;
     }

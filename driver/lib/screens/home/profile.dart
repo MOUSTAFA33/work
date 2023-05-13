@@ -32,7 +32,7 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.green[400],
+          backgroundColor: Colors.green[700],
           title: const Text('Driver Profile'),
           actions: [
             IconButton(
@@ -120,6 +120,9 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                         ]),
                     ElevatedButton(
                       child: const Text('Edit Profile'),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.green[700],)
+                      ),
                       onPressed: () {
                         // Implement edit profile functionality
                       },

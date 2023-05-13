@@ -1,4 +1,4 @@
-class Client {
+class ClienT {
 
   final String id;
   final String name;
@@ -7,9 +7,9 @@ class Client {
   final String token;
 
 
-  Client(this.id, this.name, this.email, this.phone,this.token);
+  ClienT(this.id, this.name, this.email, this.phone,this.token);
 
-  Client.fromData(Map<String, dynamic> data)
+  ClienT.fromData(Map<String, dynamic> data)
       : id = data['id'],
         name = data['name'],
         email = data['email'],

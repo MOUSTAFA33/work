@@ -17,7 +17,8 @@ class UserLocation {
       'id': id,
       'userType': userType,
       'lat': myLocation.latitude,
-      'lng': myLocation.longitude
+      'lng': myLocation.longitude,
+      'isbusy': "no",
     };
   }
 }

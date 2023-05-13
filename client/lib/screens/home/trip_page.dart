@@ -66,7 +66,7 @@ class TripContainer {
       LatLng? sourceLocation,
       LatLng? destinationLocation,
       bool _isSubWidgetVisible,
-      Client client,
+      ClienT client,
       VoidCallback onVisibilityChanged) {
     double prix = calculatePrice(
         sourceLocation!.latitude,
@@ -77,6 +77,7 @@ class TripContainer {
         backgroundColor: Colors.transparent,
         enableDrag: true,
         isScrollControlled: true,
+        isDismissible: false,
         context: context,
         builder: (context) {
           return data == null
@@ -213,7 +214,7 @@ class TripContainer {
                               ElevatedButton(
                                   onPressed: () async {
                                     //send notification
-                                    Client c = await firestoreService.getUser(
+                                    ClienT c = await firestoreService.getUser(
                                         await authService.getCurrentUserUid());
                                     notificationService.sendPushMessage(
                                         Notifications(

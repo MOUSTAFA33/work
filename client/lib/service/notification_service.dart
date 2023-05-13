@@ -48,7 +48,7 @@ class NotificationService {
     });
   }
 
-  Future<void> sendPushMessage(Notifications notifications, Client client) async {
+  Future<void> sendPushMessage(Notifications notifications, ClienT client) async {
     // Obtain shared preferences.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('request_sent', true);
@@ -83,7 +83,7 @@ class NotificationService {
 
   void getmessage() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('Got a message whilst in the foreground!');
+      print('Got a message while in the foreground!');
       print('Message data: ${message.data}');
 
       final notification = message.notification;

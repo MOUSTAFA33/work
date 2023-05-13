@@ -16,7 +16,7 @@ class clientProfilePage extends StatefulWidget {
 class _clientProfilePageState extends State<clientProfilePage> {
   FirestoreService firestoreService = FirestoreService();
   AuthService authService = AuthService();
-  Client? client;
+  ClienT? client;
 
   void initState() {
     super.initState();
@@ -123,6 +123,10 @@ class _clientProfilePageState extends State<clientProfilePage> {
                             ]),
                         ElevatedButton(
                           child: const Text('Edit Profile'),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                            Colors.green[700],
+                          )),
                           onPressed: () {
                             // Implement edit profile functionality
                           },

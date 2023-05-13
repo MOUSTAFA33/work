@@ -17,7 +17,7 @@ class FirestoreService {
   final CollectionReference notifyCollectionRef =
       FirebaseFirestore.instance.collection("notificattions");
 
-  Future createDriver(Client client) async {
+  Future createDriver(ClienT client) async {
     try {
       await clientsCollectionRef.doc(client.id).set(client.toJson());
     } catch (e) {
@@ -25,10 +25,11 @@ class FirestoreService {
     }
   }
 
-  Future<Client> getUser(String uid) async {
+  Future<ClienT> getUser(String uid) async {
     try {
       var clientData = await clientsCollectionRef.doc(uid).get();
-      return Client.fromData(clientData.data() as Map<String, dynamic>);
+      print(clientData.data());
+      return ClienT.fromData(clientData.data() as Map<String, dynamic>);
     } catch (e) {
       rethrow;
     }

@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController destinationLocationController = TextEditingController();
   bool showDriver = false;
   bool _isSubWidgetVisible = true;
-  Client? client;
+  ClienT? client;
 
   void toggleSubWidgetVisibility() {
     setState(() {
@@ -336,21 +336,43 @@ class _HomePageState extends State<HomePage> {
                                     realtimeService
                                         .readDriver(sourceLocation!, list)
                                         .then((value) {
-                                      driverLocation = value!.myLocation;
+                                      if (value == null) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                                  actionsAlignment: MainAxisAlignment.center,
+                                                  content: const Text(
+                                                      'No available drivers at the moment please try again in few minutes'),
+                                                  actions: <Widget>[
+                                                        ElevatedButton(
+                                                          onPressed: (){
+                                                            Navigator.pop(
+                                                              context);
+                                                          },
+                                                          child: Text("OK"),
+                                                        )
+                                                  ],
+                                                ));
+                                      } else {
+                                        driverLocation = value.myLocation;
                                       list.add(value.id);
                                       firestoreService
                                           .getDrivers(value.id)
-                                          .then((value) =>
-                                              TripContainer().showBoxDriver(
-                                                context,
-                                                value,
-                                                driverLocation,
-                                                sourceLocation,
-                                                destinationLocation,
-                                                _isSubWidgetVisible,
-                                                client!,
-                                                toggleSubWidgetVisibility,
-                                              ));
+                                            .then((value) {
+                                          print("value==\t\t\t$value");
+                                          TripContainer().showBoxDriver(
+                                            context,
+                                            value,
+                                            driverLocation,
+                                            sourceLocation,
+                                            destinationLocation,
+                                            _isSubWidgetVisible,
+                                            client!,
+                                            toggleSubWidgetVisibility,
+                                          );
+                                        });
+                                      }
                                     });
                                   } else {
                                     Fluttertoast.showToast(
@@ -413,7 +435,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.pop(context);
       print("trying to pop this \t\t\tawdwa");
       // if (FixedAlertDialog.dialogKey.currentContext != null) {
-        // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
+      // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
       // }
 
       if (message.notification?.body ==
@@ -486,7 +508,7 @@ class _HomePageState extends State<HomePage> {
                     child: ListBody(
                       children: const <Widget>[
                         Text(
-                          'your driver is not coming choose an other driver',
+                          'your driver is not coming choose another driver',
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -517,7 +539,7 @@ class _HomePageState extends State<HomePage> {
                                   ));
                         });
                       },
-                      child: const Text('search for an other '),
+                      child: const Text('search for another '),
                     ),
                   ]);
             });
@@ -532,7 +554,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.pop(context);
       print("trying to pop this \t\t\tawdwa");
       // if (FixedAlertDialog.dialogKey.currentContext != null) {
-        // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
+      // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
       // }
     });
   }
