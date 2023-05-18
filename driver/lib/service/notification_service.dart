@@ -61,7 +61,12 @@ class NotificationService {
         body: jsonEncode(
           <String, dynamic>{
             'priority': 'high',
-            "notification": {"title": "your driver did respond", "body": state == "accept" ? "Your driver accepted the request and in his way to you" : "Your driver refused the request please choose another driver" },
+            "notification": {
+              "title": "استجاب سائقك",
+              "body": state == "accept"
+                  ? "وافق سائقك على الطلب وفي طريقه إليك"
+                  : "رفض سائقك الطلب ، يرجى اختيار سائق آخر"
+            },
             'data': {'data': notifications.toJson()},
             "to": notifications.driverToken,
           },
@@ -70,6 +75,41 @@ class NotificationService {
       print('FCM request for device sent!');
     } catch (e) {
       print("is $e");
+    }
+  }
+
+  Future<void> sendFeedbackMessage(
+      String clienttoken, String driverid, String clientid) async {
+    print("token== $clienttoken\tdriverid== $driverid\tclientid== $clientid");
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              'key=AAAA_FIV9v8:APA91bEyx7IiWrJZ7zCn_wWBMsM38R2TZuKykRYm5JPVRppnKEE8DvY2_Wqka8LkTMGOVe0yznrF75QZHAiftU1bsZjjUKrVzcUHHM2C5n7VHayZOm8V05vq_EUsQlT2ZM2QcZrQWzYJ',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'priority': 'high',
+            "notification": {
+              "title": "لقد وصلت الى وجهتك 😊",
+              "body": "اضغط هنا لإبداء الرأي أو الإبلاغ عن السائق"
+            },
+            "data": {
+              "driverid": driverid, 
+              "clientid": clientid,
+            },
+            "to": clienttoken,
+          },
+        ),
+      );
+      //     .then((value) {
+      //   print("value==\t\t\t$value.");
+      // });
+      print('FCM request for device sent!');
+    } catch (e) {
+      print("is $e"); // token== d0Hj1tELSIG5vlNBVkMk-r:APA91bGZvJssYnzAztyKcVglTxjyNm49PHAq0SBdInFZ3BDirlSUZ21--6YICbjhAmppGfrJUZsj4dpSU8dtilEd3G1d1pXXLByqSjDP7EgEYq3Y-na-12v4NEXe07zw7Y5W0Vxr5rT_	driverid== JejZHlaeiueaXmbdqzOXO7wB3FB2	clientid== eMgNelcqq1e9RGpPQsA7PrJyIC52
     }
   }
 }

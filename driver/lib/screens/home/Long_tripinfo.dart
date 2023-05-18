@@ -85,7 +85,7 @@ class _MyTripINFOState extends State<MyTripINFO> {
                     SizedBox(
                       height: 20,
                     ),
-                    Text("reserved passengers:"),
+                    Text("الركاب المحجوزون:"),
                     Container(
                       height: 200,
                       width: MediaQuery.of(context).size.width,

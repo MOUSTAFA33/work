@@ -16,6 +16,7 @@ class ReservationPage extends StatefulWidget {
 
 class _ReservationPageState extends State<ReservationPage> {
   List tmp = [];
+  List annulertmp = [];
   bool _isready = false;
   bool _isreserved = false;
 
@@ -35,14 +36,41 @@ class _ReservationPageState extends State<ReservationPage> {
   }
 
   reserver() async {
-      tmp.add(widget.uid);
-      await FirebaseFirestore.instance
-          .collection("Trips")
-          .doc(widget.data['tripid'])
-          .update({
-        "inscrit": FieldValue.arrayUnion(tmp),
-        "placesleft": FieldValue.increment(-1)
-      });
+    tmp.add(widget.uid);
+    await FirebaseFirestore.instance
+        .collection("Trips")
+        .doc(widget.data['tripid'])
+        .update({
+      "inscrit": FieldValue.arrayUnion(tmp),
+      "placesleft": FieldValue.increment(-1)
+    });
+  }
+
+  annulerreservervation() async {
+    print("start");
+    await FirebaseFirestore.instance
+        .collection("Trips")
+        .doc(widget.data['tripid'])
+        .get()
+        .then((DocumentSnapshot documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        // print('Document exists on the database');
+        // print(documentSnapshot.data());
+        annulertmp = documentSnapshot.get('inscrit');
+        print(annulertmp);
+
+        annulertmp.removeWhere((item) => item == widget.uid);
+        print(annulertmp);
+
+        await FirebaseFirestore.instance
+        .collection("Trips")
+        .doc(widget.data['tripid'])
+        .update({
+      "inscrit": annulertmp,
+    });
+
+      }
+    });
   }
 
   @override
@@ -53,53 +81,59 @@ class _ReservationPageState extends State<ReservationPage> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(8.0),
-        child: !_isreserved ? widget.data['placesleft'] != 0
-            ? ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.green[700]),
-                ),
-                onPressed: () {
-                  reserver();
-                },
-                child: Text('Reserver'),
-              )
+        child: !_isreserved
+            ? widget.data['placesleft'] != 0
+                ? ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.green[700]),
+                    ),
+                    onPressed: () {
+                      reserver();
+                    },
+                    child: Text('Reserver'),
+                  )
+                : ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.grey)),
+                    onPressed: () {},
+                    child: Text('No places left'),
+                  )
             : ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.grey)),
-                onPressed: () {},
-                child: Text('No places left'),
-              ) : ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red[700]),
                 ),
                 onPressed: () {
-                  reserver();
+                  annulerreservervation();
                 },
                 child: Text('Annuler reservation'),
               ),
       ),
-      body: _isready ? Container(
-          width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                    "${widget.data['Station']} -----> ${widget.data['distination']}"),
-                Text(
-                    "heure de départ: ${DateFormat('MM/dd/yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.data['DateDipart']))}"),
-                Text(
-                    "l'heure d'arrivé: ${DateFormat('MM/dd/yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.data['DateArrive']))}"),
-                Text(
-                    "Le nombre total de passagers: ${widget.data['num_places']}"),
-                Text(
-                    "Le nombre de places restantes: ${widget.data['placesleft']}")
-              ],
+      body: _isready
+          ? Container(
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                        "${widget.data['Station']} -----> ${widget.data['distination']}"),
+                    Text(
+                        "heure de départ: ${DateFormat('MM/dd/yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.data['DateDipart']))}"),
+                    Text(
+                        "l'heure d'arrivé: ${DateFormat('MM/dd/yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(widget.data['DateArrive']))}"),
+                    Text(
+                        "Le nombre total de passagers: ${widget.data['num_places']}"),
+                    Text(
+                        "Le nombre de places restantes: ${widget.data['placesleft']}")
+                  ],
+                ),
+              ))
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          )) : Center(
-            child: CircularProgressIndicator(),
-          ),
     );
   }
 }

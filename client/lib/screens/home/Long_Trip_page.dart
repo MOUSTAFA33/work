@@ -18,8 +18,8 @@ class LongTrip extends StatefulWidget {
 class _LongTripState extends State<LongTrip> {
   AuthService authService = AuthService();
   String uid = "";
-  String station = "";
-  String distination = "";
+  String station = "Any";
+  String distination = "Any";
   bool _isready = false;
   bool _searching = false;
   Stream<QuerySnapshot>? Trips_stream;
@@ -72,6 +72,7 @@ class _LongTripState extends State<LongTrip> {
     final stationsfield = DropdownButton<String>(
         hint: Text("Station"),
         icon: Icon(Icons.location_on),
+        value: station,
         isExpanded: true,
         //value: station == "" ? "station" : station,
         onChanged: (value) {
@@ -90,6 +91,7 @@ class _LongTripState extends State<LongTrip> {
     final distinationsfield = DropdownButton<String>(
         hint: Text("Distination"),
         icon: Icon(Icons.location_on_outlined),
+        value: distination,
         isExpanded: true,
         //value: distination == "" ? "distination" : distination,
         onChanged: (value) {
@@ -145,8 +147,8 @@ class _LongTripState extends State<LongTrip> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Search"),
                     Icon(Icons.search),
+                    Text("ابحث عن رحلة"),
                   ],
                 )),
             SingleChildScrollView(
@@ -161,11 +163,12 @@ class _LongTripState extends State<LongTrip> {
                               AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasError) {
                               return Center(
-                                  child: Text('Something went wrong'));
+                                  child: Text('هناك شئ خاطئ، يرجى المحاولة فى وقت لاحق'));
                             }
-                            if (snapshot.data == null) {
+                            if(snapshot.data != null){
+                              if (snapshot.data!.size == 0) {
                               return Center(
-                                  child: Text("No trips are available"));
+                                  child: Text("لا توجد رحلات متاحة"));
                             } else {
                               return Expanded(
                                 child: ListView(
@@ -216,6 +219,9 @@ class _LongTripState extends State<LongTrip> {
                                 ),
                               );
                             }
+                            }
+                            return Center(
+                                  child: Text("لا توجد رحلات متاحة"));
                           },
                         )
                       : SizedBox.shrink(),

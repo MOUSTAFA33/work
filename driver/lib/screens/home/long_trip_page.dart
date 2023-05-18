@@ -20,8 +20,8 @@ class TripPage extends StatefulWidget {
 class _TripPageState extends State<TripPage> {
   AuthService authService = AuthService();
   String uid = "";
-  String station = "";
-  String distination = "";
+  String station = "Station illizi";
+  String distination = "illizi";
   int datedepart = 0;
   int datearrive = 0;
   int numplaces = 0;
@@ -105,40 +105,50 @@ class _TripPageState extends State<TripPage> {
   @override
   Widget build(BuildContext context) {
     // Stations
-    final stationsfield = DropdownButton<String>(
-        hint: Text("Station"),
-        icon: Icon(Icons.location_on),
-        isExpanded: true,
-        //value: station == "" ? "station" : station,
-        onChanged: (value) {
-          setState(() {
-            station = value!;
-          });
-        },
-        items: Stations.map((val) {
-          return DropdownMenuItem<String>(
-            value: val.toString(),
-            child: Text(val),
-          );
-        }).toList());
+    Widget stationsfield = StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return DropdownButton<String>(
+            hint: Text("Station"),
+            icon: Icon(Icons.location_on),
+            value: station,
+            isExpanded: true,
+            //value: station == "" ? "station" : station,
+            onChanged: (value) {
+              setState(() {
+                station = value!;
+              });
+            },
+            items: Stations.map((val) {
+              return DropdownMenuItem<String>(
+                value: val.toString(),
+                child: Text(val),
+              );
+            }).toList());
+      }
+    );
 
     // Distination
-    final distinationsfield = DropdownButton<String>(
-        hint: Text("Distination"),
-        icon: Icon(Icons.location_on_outlined),
-        isExpanded: true,
-        //value: distination == "" ? "distination" : distination,
-        onChanged: (value) {
-          setState(() {
-            distination = value!;
-          });
-        },
-        items: Distination.map((val) {
-          return DropdownMenuItem<String>(
-            value: val.toString(),
-            child: Text(val),
-          );
-        }).toList());
+    Widget distinationsfield = StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return DropdownButton<String>(
+            hint: Text("Distination"),
+            icon: Icon(Icons.location_on_outlined),
+            value: distination,
+            isExpanded: true,
+            //value: distination == "" ? "distination" : distination,
+            onChanged: (value) {
+              setState(() {
+                distination = value!;
+              });
+            },
+            items: Distination.map((val) {
+              return DropdownMenuItem<String>(
+                value: val.toString(),
+                child: Text(val),
+              );
+            }).toList());
+      }
+    );
 
     final DatedepartField = TextButton(
         onPressed: () {
@@ -149,18 +159,22 @@ class _TripPageState extends State<TripPage> {
                 DateTime.fromMillisecondsSinceEpoch(datedepart).toString(),
                 style: TextStyle(color: Colors.green),
               )
-            : Text('Depart Date'));
+            : Text('تاريخ المغادرة'));
 
-    final DateArriveField = TextButton(
-        onPressed: () {
-          dateTimePickerWidget(context, 1);
-        },
-        child: datearrive != 0
-            ? Text(
-                DateTime.fromMillisecondsSinceEpoch(datearrive).toString(),
-                style: TextStyle(color: Colors.green),
-              )
-            : Text('arrive Date'));
+    final DateArriveField = StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return TextButton(
+            onPressed: () {
+              dateTimePickerWidget(context, 1);
+            },
+            child: datearrive != 0
+                ? Text(
+                    DateTime.fromMillisecondsSinceEpoch(datearrive).toString(),
+                    style: TextStyle(color: Colors.green),
+                  )
+                : Text('تاريخ الوصول'));
+      }
+    );
 
     Future newTripdialog(BuildContext context) {
       return showDialog(
@@ -174,32 +188,32 @@ class _TripPageState extends State<TripPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Station de depart"),
+                      Text("محطة المغادرة"),
                       stationsfield,
-                      Text("Station d'arrive"),
+                      Text("محطة الوصول"),
                       distinationsfield,
-                      Text("Date de depart"),
+                      Text("موعد المغادرة"),
                       DatedepartField,
-                      Text("Date d'arrive"),
+                      Text("موعد الوصول"),
                       DateArriveField,
-                      Text("Nombre des place"),
+                      Text("عدد الأماكن"),
                       TextFormField(
                         onChanged: (num) {
                           numplaces = int.parse(num);
                         },
                         decoration: const InputDecoration(
-                          labelText: 'Number of places',
+                          labelText: 'عدد الأماكن الباقية',
                         ),
                         keyboardType: TextInputType.number,
                       ),
-                      Text("Description"),
+                      Text("الوصف"),
                       TextField(
                         minLines: 3,
                         maxLines: 6,
                         keyboardType: TextInputType.multiline,
                         controller: descriptionFieldController,
                         decoration:
-                            InputDecoration(hintText: "Text Field in Dialog"),
+                            InputDecoration(hintText: "أي معلومات اضافية"),
                       ),
                     ],
                   ),
@@ -208,7 +222,7 @@ class _TripPageState extends State<TripPage> {
             ), // here
             actions: [
               ElevatedButton(
-                  child: Text('Cancel'),
+                  child: Text('إلغاء'),
                   style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(Colors.red[800])),
@@ -219,7 +233,7 @@ class _TripPageState extends State<TripPage> {
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(Colors.blue[800])),
-                      child: Text('Create'),
+                      child: Text('إنشاء'),
                       onPressed: () {
                         if (uid != "" &&
                             station != "" &&
@@ -260,7 +274,7 @@ class _TripPageState extends State<TripPage> {
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Loading");
+                    return Center(child: Text("Loading"));
                   }
 
                   return ListView(
@@ -305,7 +319,7 @@ class _TripPageState extends State<TripPage> {
                                   );
                                 });
                           },
-                        ),
+                        ),  
                         title: Text(
                             "${data['Station']} -----> ${data['distination']}"),
                         subtitle: Text(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/models/notifications.dart';
 import 'package:driver/screens/home/long_trip_page.dart';
 import 'package:driver/screens/home/trip_page.dart';
@@ -41,6 +42,28 @@ class _HomePageState extends State<HomePage> {
     // load the portion of the map defined by visibleRegion
   }
 
+  bool? is_active;
+  getifactive() async {
+    await FirebaseFirestore.instance.collection("drivers").doc(uid).get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        print("data::\t\t\t$data");
+        print("isavailable::\t\t\t${data['isAvailable']}");
+        if (data['isAvailable'] == "yes") {
+          setState(() {
+            is_active = true;
+          });
+        } else if (data['isAvailable'] == "no") {
+          setState(() {
+            is_active = false;
+          });
+        }
+        // ...
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+  }
+
   LocationService locationService = LocationService();
   FirestoreService firestoreService = FirestoreService();
   AuthService authService = AuthService();
@@ -76,6 +99,9 @@ class _HomePageState extends State<HomePage> {
 
   getuid() async {
     uid = await authService.getCurrentUserUid();
+    if (uid != "") {
+      getifactive();
+    }
   }
 
   @override
@@ -84,8 +110,6 @@ class _HomePageState extends State<HomePage> {
     locationSubscription!.cancel();
     super.dispose();
   }
-
-  bool is_active = false;
 
   Future<void> fixIconMarker() async {
     pinMarker = await locationService
@@ -130,7 +154,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, '/profile');
             },
             icon: const Icon(Icons.account_circle_rounded)),
-        title: const Text('Home Page'),
+        //title: const Text('Home Page'),
         actions: [
           IconButton(
               onPressed: () {
@@ -149,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                                 width: 10,
                               ),
                               Text(
-                                'Exit The App ?',
+                                'الخروج من التطبيق؟',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -158,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                             child: ListBody(
                               children: const <Widget>[
                                 Text(
-                                  ' are you sure  you want to Exit ?',
+                                  'هل أنت متأكد أنك تريد الخروج ؟',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -172,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Text('Cancel'),
+                              child: const Text('إلغاء'),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -182,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                                 powerOn(false);
                                 SystemNavigator.pop();
                               },
-                              child: const Text('Exit'),
+                              child: const Text('خروج'),
                             ),
                           ]);
                     });
@@ -224,23 +248,26 @@ class _HomePageState extends State<HomePage> {
                       child: CircleAvatar(
                           backgroundColor: Colors.black,
                           child: IconButton(
-                              color: is_active ? Colors.green : Colors.red,
+                              color: is_active != null
+                                  ? is_active!
+                                      ? Colors.green
+                                      : Colors.red
+                                  : Colors.grey,
                               icon: const Icon(Icons.power_settings_new),
                               onPressed: () {
-                                //powerOn(false);
-
-                                showDialog(
+                                if (is_active != null) {
+                                  showDialog(
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (BuildContext context) {
-                                      return !is_active
+                                        return !is_active!
                                           ? AlertDialog(
                                               backgroundColor: Colors.black45,
                                               content: SingleChildScrollView(
                                                 child: ListBody(
                                                   children: const <Widget>[
                                                     Text(
-                                                      'Start working ?',
+                                                        'بدء العمل ؟',
                                                       style: TextStyle(
                                                           color: Colors.white),
                                                     ),
@@ -271,7 +298,7 @@ class _HomePageState extends State<HomePage> {
                                                 child: ListBody(
                                                   children: const <Widget>[
                                                     Text(
-                                                      'Stop working ?',
+                                                        'توقف عن العمل ؟',
                                                       style: TextStyle(
                                                           color: Colors.white),
                                                     ),
@@ -296,6 +323,9 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                             );
                                     });
+                                }
+
+                                
                               })))),
             ]),
     );

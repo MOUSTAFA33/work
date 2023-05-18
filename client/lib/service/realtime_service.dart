@@ -96,12 +96,13 @@ class RealtimeService {
       if (snapshot.exists) {
         Map<String, dynamic> snapshotValue =
             Map<String, dynamic>.from(snapshot.value as Map);
+          // print("a\t\t\t$snapshotValue");
         for (var i in snapshotValue.values.toList()) {
           Map<String, dynamic> a = Map<String, dynamic>.from(i as Map);
           if (a['isbusy'] == "no") {
             UserLocation userLocation = UserLocation.fromData(a);
             double dist = distance(userLocation.myLocation, thelocation);
-            print(dist);
+            // print(dist);
             if (dist < 10) {
               cpt = cpt + 1;
               if (least_dist == 0) {
@@ -121,6 +122,7 @@ class RealtimeService {
       if (cpt == 0) {
         return null;
       }
+      // print("closestDriver :::\t\t\t\t $closestDriver");
       return closestDriver;
     } catch (e) {
       rethrow;

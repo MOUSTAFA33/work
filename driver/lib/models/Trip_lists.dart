@@ -1,5 +1,4 @@
 List Stations = [
-  "Any",
   "Station illizi",
   "Station ain amenas",
   "Station Djanet",
@@ -11,7 +10,6 @@ List Stations = [
 ];
 
 List Distination = [
-  "Any",
   "illizi",
   "ain amenas",
   "Djanet",

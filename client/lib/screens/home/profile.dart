@@ -35,7 +35,7 @@ class _clientProfilePageState extends State<clientProfilePage> {
     return client != null
         ? Scaffold(
             appBar: AppBar(
-              title: const Text('Profile'),
+              title: const Text('الملف الشخصي'),
               backgroundColor: Colors.green[700],
               actions: [
                 IconButton(
@@ -121,16 +121,16 @@ class _clientProfilePageState extends State<clientProfilePage> {
                                 style: const TextStyle(fontSize: 18),
                               ),
                             ]),
-                        ElevatedButton(
-                          child: const Text('Edit Profile'),
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(
-                            Colors.green[700],
-                          )),
-                          onPressed: () {
-                            // Implement edit profile functionality
-                          },
-                        ),
+                        // ElevatedButton(
+                        //   child: const Text('تعديل الملف الشخصي'),
+                        //   style: ButtonStyle(
+                        //       backgroundColor: MaterialStatePropertyAll(
+                        //     Colors.green[700],
+                        //   )),
+                        //   onPressed: () {
+                        //     // Implement edit profile functionality
+                        //   },
+                        // ),
                       ],
                     ),
                   ))

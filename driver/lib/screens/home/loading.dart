@@ -49,7 +49,7 @@ class _LoadingPageState extends State<LoadingPage> {
                   )
                 ],
               )
-            : const Text('Loading complete!'),
+            : const Text('اكتمل التحميل!'),
       ),
     );
   }

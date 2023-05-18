@@ -48,16 +48,26 @@ class NotificationService {
     });
   }
 
-  Future<void> sendPushMessage(Notifications notifications, ClienT client) async {
+  Future<void> sendPushMessage(
+      Notifications notifications, ClienT client) async {
     // Obtain shared preferences.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('request_sent', true);
 
     var p = 0.017453292519943295;
     var c = cos;
-    var a = 0.5 - c((notifications.cordinate.distenation!.latitude - notifications.cordinate.source!.latitude) * p)/2 + 
-          c(notifications.cordinate.source!.latitude * p) * c(notifications.cordinate.distenation!.latitude * p) * 
-          (1 - c((notifications.cordinate.distenation!.longitude - notifications.cordinate.source!.longitude) * p))/2;
+    var a = 0.5 -
+        c((notifications.cordinate.distenation!.latitude -
+                    notifications.cordinate.source!.latitude) *
+                p) /
+            2 +
+        c(notifications.cordinate.source!.latitude * p) *
+            c(notifications.cordinate.distenation!.latitude * p) *
+            (1 -
+                c((notifications.cordinate.distenation!.longitude -
+                        notifications.cordinate.source!.longitude) *
+                    p)) /
+            2;
     try {
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -69,7 +79,10 @@ class NotificationService {
         body: jsonEncode(
           <String, dynamic>{
             'priority': 'high',
-            "notification": {"title": "${client.name} asked for a Driver!", "body": "Trip Distance: ${12742 * asin(sqrt(a))} Km"},
+            "notification": {
+              "title": "${client.name} asked for a Driver!",
+              "body": "Trip Distance: ${12742 * asin(sqrt(a))} Km"
+            },
             'data': {'data': notifications.toJson()},
             "to": notifications.driverToken,
           },
@@ -97,6 +110,14 @@ class NotificationService {
 
   Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
+    print('Got a message while in the background!');
+    print('Message data: ${message.data}');
+
+    final notification = message.notification;
+    //Notifications data = Notifications.fromData(jsonDecode(notification!.body!));
+    print("notification = \t\t $notification");
+    debugPrint("message has get");
+
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     print("Handling a background message: ${message.messageId}");

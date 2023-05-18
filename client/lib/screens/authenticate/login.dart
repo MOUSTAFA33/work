@@ -28,18 +28,10 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       dynamic user = await _auth.signInWithEmailAndPassword(_email, _password);
       if (user != null) {
-        Fluttertoast.showToast(
-            msg: "Welcome to the home page",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.black12,
-            textColor: Colors.white,
-            fontSize: 16.0);
         Navigator.pushReplacementNamed(context, '/main');
       } else {
         Fluttertoast.showToast(
-            msg: "Wrong username or password",
+            msg: "اسم المستخدم أو كلمة المرور خاطئة",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -79,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) =>
-                            value!.isEmpty ? 'Email cannot be empty' : null,
+                            value!.isEmpty ? 'لا يمكن أن يكون البريد الإلكتروني فارغًا' : null,
                         onChanged: (value) {
                           setState(() {
                             _email = value.trim();
@@ -112,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                         keyboardType: TextInputType.text,
                         validator: (value) =>
-                            value!.isEmpty ? 'Password cannot be empty' : null,
+                            value!.isEmpty ? 'لا يمكن أن تكون كلمة المرور فارغة' : null,
                         obscureText: true,
                         onChanged: (value) {
                           setState(() {
@@ -124,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         decoration: const InputDecoration(
                           icon: Icon(Icons.lock, color: Colors.grey),
-                          labelText: "password",
+                          labelText: "كلمة المرور",
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey)),
                           focusedBorder: UnderlineInputBorder(
@@ -144,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: _submitForm,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.lightGreenAccent),
-                          child: const Text(" Log in",
+                          child: const Text("تسجيل الدخول",
                               style: TextStyle(
                                 color: Colors.black54,
                                 fontSize: 15,
@@ -153,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("I alredy have an account! ",
+                          const Text("لدي حساب بالفعل!",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15,
@@ -165,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                     MaterialPageRoute(
                                         builder: (c) => const SignUpPage()));
                               },
-                              child: const Text("Sign up",
+                              child: const Text("سجل حساب",
                                   style: TextStyle(
                                     color: Colors.green,
                                     fontSize: 20,

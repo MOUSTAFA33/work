@@ -33,7 +33,7 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green[700],
-          title: const Text('Driver Profile'),
+          title: const Text('الملف الشخصي للسائق'),
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
@@ -118,15 +118,15 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                             style: const TextStyle(fontSize: 18),
                           ),
                         ]),
-                    ElevatedButton(
-                      child: const Text('Edit Profile'),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Colors.green[700],)
-                      ),
-                      onPressed: () {
-                        // Implement edit profile functionality
-                      },
-                    ),
+                    // ElevatedButton(
+                    //   child: const Text('Edit Profile'),
+                    //   style: ButtonStyle(
+                    //     backgroundColor: MaterialStatePropertyAll(Colors.green[700],)
+                    //   ),
+                    //   onPressed: () {
+                    //     // Implement edit profile functionality
+                    //   },
+                    // ),
                   ],
                 ),
               ));

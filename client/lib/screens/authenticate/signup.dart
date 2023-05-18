@@ -31,7 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             children: [
               const SizedBox(height: 50),
-              const Text("Registration",
+              const Text("تسجيل",
                   style: TextStyle(
                     fontSize: 30,
                     color: Colors.grey,
@@ -49,7 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Icons.person,
                     color: Colors.grey,
                   ),
-                  labelText: "name",
+                  labelText: "اسم",
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey)),
                   focusedBorder: UnderlineInputBorder(
@@ -73,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 decoration: const InputDecoration(
                   icon: Icon(Icons.email, color: Colors.grey),
-                  labelText: "Email",
+                  labelText: "بريد إلكتروني",
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey)),
                   focusedBorder: UnderlineInputBorder(
@@ -97,7 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 decoration: const InputDecoration(
                   icon: Icon(Icons.phone, color: Colors.grey),
-                  labelText: "phone",
+                  labelText: "هاتف",
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey)),
                   focusedBorder: UnderlineInputBorder(
@@ -122,7 +122,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 decoration: const InputDecoration(
                   icon: Icon(Icons.password, color: Colors.grey),
-                  labelText: "password",
+                  labelText: "كلمة المرور",
                   enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey)),
                   focusedBorder: UnderlineInputBorder(
@@ -150,17 +150,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         .then((value) {
                       if (value) {
                         Navigator.pushReplacementNamed(context, '/');
-                        Fluttertoast.showToast(
-                            msg: "wolcome to home",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
                       } else {
                         Fluttertoast.showToast(
-                            msg: "the user alredy exist",
+                            msg: "المستخدم موجود بالفعل",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
@@ -172,7 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightGreenAccent),
-                  child: const Text(" Sign up",
+                  child: const Text(" سجل حساب جديد",
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 15,
@@ -181,7 +173,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text("I don't have an account?  ",
+                  const Text("ليس لديك حساب؟ ",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 15,
@@ -193,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             MaterialPageRoute(
                                 builder: (c) => const LoginPage()));
                       },
-                      child: const Text("LogIn",
+                      child: const Text("تسجيل الدخول",
                           style: TextStyle(
                             color: Colors.green,
                             fontSize: 20,

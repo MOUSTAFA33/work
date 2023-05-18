@@ -90,7 +90,6 @@ class TripContainer {
                       ? const Center(child: CircularProgressIndicator())
                       : SingleChildScrollView(
                           physics: AlwaysScrollableScrollPhysics(),
-                          child: Expanded(
                             child: Container(
                               padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
                               decoration: BoxDecoration(
@@ -221,6 +220,11 @@ class TripContainer {
                                                   modalSetState(() {
                                                     clientwaspickedup = false;
                                                   });
+
+                                                  notificationService.sendFeedbackMessage(
+                                                          data.token,
+                                                          driverid,
+                                                          clientid);
                                                 },
                                                 child: const Text('finished'))
                                             : ElevatedButton(
@@ -236,9 +240,20 @@ class TripContainer {
                                     ),
                                   ]),
                             ),
-                          ),
                         ),
                 )));
+  }
+
+  sendFeedbacktoclient() {
+    NotificationService notificationService = NotificationService();
+    // notificationService.sendPushMessage(
+    //             Notifications(
+    //                 notifications.id,
+    //                 notifications.driverToken,
+    //                 notifications.clientToken,
+    //                 notifications.cordinate,
+    //                 notifications.prix),
+    //             "accept");
   }
 
   void change(clientID, driverid, bool ispickedup) async {

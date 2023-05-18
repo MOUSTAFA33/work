@@ -91,7 +91,7 @@ class LocationService {
   }
 
   Marker getMarker(theLocation, theIcon, theTitle) {
-    print('put  marker ');
+    //print('put  marker ');
 
     return Marker(
       markerId: MarkerId(theLocation!.toString()),

@@ -97,7 +97,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       Icons.location_pin,
                       color: Colors.red[400],
                     ),
-                    title: const Text('Source Location'),
+                    title: const Text('موقع البدء'),
                     subtitle: Text(
                       ' ${widget.sourceLocation.toString()}',
                     ))),
@@ -107,7 +107,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       Icons.flag,
                       color: Colors.green[400],
                     ),
-                    title: const Text('Destination Location'),
+                    title: const Text('موقع وجهة'),
                     subtitle: Text(
                       '${widget.destinationLocation.toString()}',
                     ))),

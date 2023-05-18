@@ -5,6 +5,7 @@ import 'package:client/service/auth_service.dart';
 import 'package:client/service/firestore_service.dart';
 import 'package:client/service/location_service.dart';
 import 'package:client/service/notification_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,6 +20,7 @@ import 'CustomSearch.dart';
 import 'Long_Trip_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'review_driver.dart';
 import 'wait.dart';
 
 class HomePage extends StatefulWidget {
@@ -115,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, '/profile');
             },
             icon: const Icon(Icons.account_circle_rounded)),
-        title: const Text('Home Page'),
+        title: const Text(''),
         actions: [
           IconButton(
             style: ButtonStyle(
@@ -262,9 +264,9 @@ class _HomePageState extends State<HomePage> {
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
-                                hintText: 'Your Location',
+                                hintText: 'موقعك',
                                 label: Text(
-                                  'Your Location',
+                                  'موقعك',
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
@@ -285,9 +287,9 @@ class _HomePageState extends State<HomePage> {
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
-                                hintText: 'Distanation Location',
+                                hintText: 'موقع وجهة',
                                 label: Text(
-                                  'Distanation Location',
+                                  'موقع وجهة',
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
@@ -341,24 +343,24 @@ class _HomePageState extends State<HomePage> {
                                             context: context,
                                             builder: (BuildContext context) =>
                                                 AlertDialog(
-                                                  actionsAlignment: MainAxisAlignment.center,
+                                                  actionsAlignment:
+                                                      MainAxisAlignment.center,
                                                   content: const Text(
-                                                      'No available drivers at the moment please try again in few minutes'),
+                                                      'لا توجد برامج تشغيل متوفرة في الوقت الحالي ، يرجى المحاولة مرة أخرى في غضون دقائق قليلة'),
                                                   actions: <Widget>[
-                                                        ElevatedButton(
-                                                          onPressed: (){
-                                                            Navigator.pop(
-                                                              context);
-                                                          },
-                                                          child: Text("OK"),
-                                                        )
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text("OK"),
+                                                    )
                                                   ],
                                                 ));
                                       } else {
                                         driverLocation = value.myLocation;
-                                      list.add(value.id);
-                                      firestoreService
-                                          .getDrivers(value.id)
+                                        list.add(value.id);
+                                        firestoreService
+                                            .getDrivers(value.id)
                                             .then((value) {
                                           print("value==\t\t\t$value");
                                           TripContainer().showBoxDriver(
@@ -385,7 +387,7 @@ class _HomePageState extends State<HomePage> {
                                         fontSize: 16.0);
                                   }
                                 },
-                                child: const Text('Find Driver'))
+                                child: const Text('ابحث عن سائق'))
                           ]),
                     ),
                   ),
@@ -433,13 +435,13 @@ class _HomePageState extends State<HomePage> {
       // Parse the message data as a JSON string
 
       Navigator.pop(context);
-      print("trying to pop this \t\t\tawdwa");
       // if (FixedAlertDialog.dialogKey.currentContext != null) {
       // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
       // }
-
+      double rating = 5;
+      String comment = "";
       if (message.notification?.body ==
-          "Your driver accepted the request and in his way to you") {
+          "وافق سائقك على الطلب وفي طريقه إليك") {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -464,7 +466,7 @@ class _HomePageState extends State<HomePage> {
                     child: ListBody(
                       children: const <Widget>[
                         Text(
-                          'your request is accepted the driver is coming',
+                          'تم قبول طلبك ، السائق قادم',
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -483,7 +485,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ]);
             });
-      } else {
+      } else if (message.notification?.body ==
+          "رفض سائقك الطلب ، يرجى اختيار سائق آخر") {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -543,6 +546,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ]);
             });
+      } else if (message.notification?.body ==
+          "اضغط هنا لإبداء الرأي أو الإبلاغ عن السائق") {
+            Navigator.push(
+                  context, MaterialPageRoute(builder: (c) => ReviewDriver(clientid: message.data['clientid'], driverid: message.data['driverid'],)));
       }
     });
 
@@ -556,6 +563,120 @@ class _HomePageState extends State<HomePage> {
       // if (FixedAlertDialog.dialogKey.currentContext != null) {
       // Navigator.pop(FixedAlertDialog.dialogKey.currentContext!);
       // }
+      
+      if (message.notification?.body ==
+          "وافق سائقك على الطلب وفي طريقه إليك") {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  backgroundColor: Colors.black45,
+                  title: Row(
+                    children: const [
+                      Icon(
+                        Icons.mode_night_outlined,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'the driver is coming',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: const <Widget>[
+                        Text(
+                          'your request is accepted the driver is coming',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        return;
+                      },
+                      child: const Text('ok'),
+                    ),
+                  ]);
+            });
+      } else if (message.notification?.body ==
+          "رفض سائقك الطلب ، يرجى اختيار سائق آخر") {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  backgroundColor: Colors.black45,
+                  title: Row(
+                    children: const [
+                      Icon(
+                        Icons.mode_night_outlined,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'السائق مشغول',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: const <Widget>[
+                        Text(
+                          'السائق الخاص بك لن يأتي اختر سائق آخر',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () async {
+                        realtimeService
+                            .readDriver2(sourceLocation!, list)
+                            .then((value) {
+                          driverLocation = value!.myLocation;
+                          list.add(value.id);
+                          firestoreService
+                              .getDrivers(value.id)
+                              .then((value) => TripContainer().showBoxDriver(
+                                    context,
+                                    value,
+                                    driverLocation,
+                                    sourceLocation,
+                                    destinationLocation,
+                                    _isSubWidgetVisible,
+                                    client!,
+                                    toggleSubWidgetVisibility,
+                                  ));
+                        });
+                      },
+                      child: const Text('ابحث عن آخر'),
+                    ),
+                  ]);
+            });
+      } else if (message.notification?.body ==
+          "اضغط هنا لإبداء الرأي أو الإبلاغ عن السائق") {
+            Navigator.push(
+                  context, MaterialPageRoute(builder: (c) => ReviewDriver(clientid: message.data['clientid'], driverid: message.data['driverid'],)));
+      }
     });
   }
+
+  
 }
