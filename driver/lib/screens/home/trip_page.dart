@@ -111,12 +111,12 @@ class TripContainer {
                                       children: [
                                         const Text(
                                           'Your Trip',
-                                          style: TextStyle(fontSize: 15),
+                                          style: TextStyle(fontSize: 20),
                                         ),
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        Text("$prix DZD"),
+                                        Text("$prix DZD", style: TextStyle(fontSize: 20),),
                                       ],
                                     ),
                                     const SizedBox(height: 10),

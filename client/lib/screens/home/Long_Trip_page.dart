@@ -170,8 +170,7 @@ class _LongTripState extends State<LongTrip> {
                               return Center(
                                   child: Text("لا توجد رحلات متاحة"));
                             } else {
-                              return Expanded(
-                                child: ListView(
+                              return ListView(
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   children: snapshot.data!.docs
@@ -216,8 +215,7 @@ class _LongTripState extends State<LongTrip> {
                                       );
                                     }
                                   }).toList(),
-                                ),
-                              );
+                                );
                             }
                             }
                             return Center(

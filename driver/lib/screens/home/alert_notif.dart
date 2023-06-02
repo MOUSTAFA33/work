@@ -134,7 +134,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                 audioPlayer.stop();
                 Navigator.of(context).pop(true);
               },
-              child: const Text('Accept'),
+              child: const Text('قبول'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -142,7 +142,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                 audioPlayer.stop();
                 Navigator.of(context).pop(false);
               },
-              child: const Text('Refuse'),
+              child: const Text('رفض'),
             ),
           ],
         ),

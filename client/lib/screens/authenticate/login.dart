@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
   bool _isLoading = false;
 
+// تاكد من معلومات ا
   void _submitForm() async {
     setState(() {
       _isLoading = true;
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const SizedBox(height: 40),
-                      const Text("Log In ",
+                      const Text("تسجيل الدخول",
                           style: TextStyle(
                             fontSize: 30,
                             color: Colors.grey,
@@ -85,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                             Icons.email,
                             color: Colors.grey,
                           ),
-                          labelText: "emil",
+                          labelText: "البريد الالكتروني",
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey)),
                           focusedBorder: UnderlineInputBorder(

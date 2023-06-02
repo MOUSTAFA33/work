@@ -148,7 +148,7 @@ class _ReviewDriverState extends State<ReviewDriver> {
                       onPressed: () async {
                         sendreview(comment, _value + 1, widget.clientid,
                             widget.driverid);
-                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, '/main');
                       },
                       child: const Text('إرسال'),
                     ),

@@ -173,7 +173,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text("ليس لديك حساب؟ ",
+                  const Text(" لديك حساب؟ ",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 15,

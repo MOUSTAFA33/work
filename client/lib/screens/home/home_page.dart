@@ -411,7 +411,7 @@ class _HomePageState extends State<HomePage> {
             ),
     );
   }
-
+// تحديث الموقع باسنمرار
   void tracking() {
     locationSubscription =
         locationService.location.onLocationChanged.listen((newloc) async {
@@ -457,7 +457,7 @@ class _HomePageState extends State<HomePage> {
                         width: 10,
                       ),
                       Text(
-                        'the driver is coming',
+                        'سائقك قادم',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
@@ -502,7 +502,7 @@ class _HomePageState extends State<HomePage> {
                         width: 10,
                       ),
                       Text(
-                        'the driver is busy',
+                        'سائق مشغول',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
@@ -511,7 +511,7 @@ class _HomePageState extends State<HomePage> {
                     child: ListBody(
                       children: const <Widget>[
                         Text(
-                          'your driver is not coming choose another driver',
+                          'سائق لن يأتي اختر سائق اخر ',
                           style: TextStyle(color: Colors.white),
                         ),
                       ],

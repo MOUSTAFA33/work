@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const SizedBox(height: 40),
-                      const Text("Log In ",
+                      const Text("تسجيل الدخول ",
                           style: TextStyle(
                             fontSize: 30,
                             color: Colors.grey,
